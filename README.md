@@ -12,12 +12,14 @@ dsh-plugins-index/
 
 `index.json` 目前列出四个插件：
 
-| 插件 | 来源 | 版本数 | 默认版本 |
-|---|---|---|---|
-| `@smai-kit/dsh-smkit` | npm | 23 | 1.20.0 |
-| `dsh-better-sidebar` | npm | 36 | 0.30.1（另有 `beta` / `alpha` 渠道） |
-| `dsh-memory-evolve` | Git 提交 `44b6b3e` | 1 | 0.1.0 |
-| `dsh-sessions-manager` | npm | 25 | 3.7.10 |
+| 插件 | 来源 | 收录版本 |
+|---|---|---|
+| `@smai-kit/dsh-smkit` | npm | 1.20.0 |
+| `dsh-better-sidebar` | npm | 0.30.1 |
+| `dsh-memory-evolve` | Git 提交 `44b6b3e` | 0.1.0 |
+| `dsh-sessions-manager` | npm | 3.7.10 |
+
+每个插件只保留一个版本（即发布时的 `latest`），不收录历史版本与 `beta` / `alpha` 渠道：索引用于“装到当前最新”，回滚或旧版本请直接走 `dsh plugin add <name>@<version>`。
 
 `engines.dsh` 的来源：manifest 声明了 `engines.dsh` 时原样复制，否则取所有 `@deepseek-ai/dsh` / `@deepseek-ai/dsh-*` peer 范围的合取；没有这类 peer 的版本省略该字段，语义为任意 dsh 版本。
 
@@ -46,9 +48,9 @@ python -m http.server 8080
 
 ## 发新版本时手动改两处
 
-以 npm 来源为例：
+以 npm 来源为例，**替换**而不是追加：
 
-1. 在对应插件的 `versions` 数组**最前面**加一块（顺序不影响安装，但便于阅读）：
+1. 把对应插件 `versions` 里唯一那块改成新版本：
 
    ```json
    {
@@ -59,23 +61,23 @@ python -m http.server 8080
    }
    ```
 
-2. 把该插件的 `dist-tags.latest` 改成新版本号。
+2. 把该插件的 `dist-tags.latest` 改成同一个版本号（两者必须一致，否则整份索引被拒收）。
 
 `publishTimestamp` 是 npm 上的发布时间（Unix 秒），用一条命令取：
 
 ```sh
-npm view @smai-kit/dsh-smkit time --json
+npm view @smai-kit/dsh-smkit time.1.21.0 --json
 ```
 
-列出某包尚未收录的版本与时间（对照着改）：
+列出某包的最新版本与时间（对照着改）：
 
 ```sh
-npm view dsh-better-sidebar versions time --json
+npm view dsh-better-sidebar version time --json
 ```
 
-漏改 `dist-tags.latest` 不会被拒收，但「最新渠道」会指向旧版本；版本号与 registry 不一致、时间戳写错这类问题校验器查不出来，只能靠生成器或人工核对。
+版本号与 registry 不一致、时间戳写错这类问题校验器查不出来，只能靠人工核对。
 
-第三方插件更新时，用同样的方式补版本即可；不想追更就保持原样，索引是自洽的快照。
+第三方插件更新时，用同样的方式替换版本即可；不想追更就保持原样，索引是自洽的快照。
 
 ## 改成自动生成
 
@@ -83,6 +85,7 @@ npm view dsh-better-sidebar versions time --json
 
 ## 已知限制
 
+- 每个插件只列一个版本，无法从「发现」安装历史版本；需要旧版就用 `dsh plugin add <name>@<version>`。
 - 索引不支持升级：新版本只显示为「有新版本」，仍需卸载后再装。
 - 索引是静态快照，重新生成前版本列表不会更新。
 - 索引无签名，`name`/`version`/`engines` 的真实性由发布方声明。
