@@ -35,12 +35,12 @@
         ]
       },
       "dist-tags": {
-        "latest": "1.20.0"
+        "latest": "1.20.1"
       },
       "versions": [
         {
-          "version": "1.20.0",
-          "publishTimestamp": 1794226864,
+          "version": "1.20.1",
+          "publishTimestamp": 1794395259,
           "source": {
             "type": "npm"
           },
@@ -59,12 +59,12 @@
         "url": "https://github.com/omdsh-dev/DSH-better-sidebar"
       },
       "dist-tags": {
-        "latest": "0.30.1"
+        "latest": "0.31.1"
       },
       "versions": [
         {
-          "version": "0.30.1",
-          "publishTimestamp": 1793848027,
+          "version": "0.31.1",
+          "publishTimestamp": 1794406078,
           "source": {
             "type": "npm"
           },
