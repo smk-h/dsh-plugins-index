@@ -75,22 +75,6 @@
       ]
     },
     {
-      "name": "dsh-memory-evolve",
-      "title": "Memory Evolve",
-      "description": "为 DeepSeek Harness 带来分层记忆（全局 / 用户 / 项目 / GIT 分支 / 每日）与自我进化（经验沉淀 + 技能自动创建）和技能管理、待办管理、CLI 调度（kimi/codex/grok/hermes 等外部 AI 统一调度）、临时信息便签，带 WebUI 管理界面。Hermes-style long-term memory, self-evolution, skills, todos and external CLI agent dispatch for DeepSeek Harness.",
-      "versions": [
-        {
-          "version": "0.1.0",
-          "publishTimestamp": 1793285011,
-          "source": {
-            "type": "git",
-            "url": "https://github.com/csyangwen/dsh-memory-evolve",
-            "commit": "44b6b3eb65a1d50ceba0afb2c13acdd4a8b81423"
-          }
-        }
-      ]
-    },
-    {
       "name": "dsh-sessions-manager",
       "title": "Sessions Manager",
       "description": "DSH 会话管理插件：设置面板 + 侧栏双入口，归档 / 恢复 / 跨工作区移动 / 回收站（可恢复、批量清空、自动清理），子代理折叠与血缘、删父会话连带子代理，空白会话识别，按标题 · ID · 工作区搜索，带磁盘占用与会话详情。已适配 DSH 0.1.7 / 0.2.0 / 0.2.1-rc.2。Session manager for DeepSeek Harness — archive / restore / move / trash lifecycle from both the settings",
@@ -120,6 +104,22 @@
           },
           "engines": {
             "dsh": ">=0.1.0-rc.6"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dsh-memory-evolve",
+      "title": "Memory Evolve",
+      "description": "为 DeepSeek Harness 带来分层记忆（全局 / 用户 / 项目 / GIT 分支 / 每日）与自我进化（经验沉淀 + 技能自动创建）和技能管理、待办管理、CLI 调度（kimi/codex/grok/hermes 等外部 AI 统一调度）、临时信息便签，带 WebUI 管理界面。Hermes-style long-term memory, self-evolution, skills, todos and external CLI agent dispatch for DeepSeek Harness.",
+      "versions": [
+        {
+          "version": "0.1.0",
+          "publishTimestamp": 1793285011,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/csyangwen/dsh-memory-evolve",
+            "commit": "44b6b3eb65a1d50ceba0afb2c13acdd4a8b81423"
           }
         }
       ]

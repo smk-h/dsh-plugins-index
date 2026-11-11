@@ -1,0 +1,10 @@
+{
+  "title": {
+    "en": "smkit plugin index",
+    "zh": "smkit 插件索引"
+  },
+  "description": {
+    "en": "Plugins maintained by smk-h for DeepSeek Harness.",
+    "zh": "smk-h 维护的 DeepSeek Harness 插件。"
+  }
+}

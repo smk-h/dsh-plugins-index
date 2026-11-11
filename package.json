@@ -1,0 +1,18 @@
+{
+  "name": "dsh-plugins-index",
+  "private": true,
+  "type": "module",
+  "description": "DeepSeek Harness 的自定义插件索引",
+  "scripts": {
+    "index": "node scripts/generate.mjs",
+    "index:check": "node scripts/generate.mjs --check"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@deepseek-ai/dsh-plugin-market-index": "^0.2.2-rc.1",
+    "semver": "^7.8.5",
+    "yaml": "^2.9.0"
+  }
+}

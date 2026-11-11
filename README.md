@@ -6,8 +6,14 @@ DeepSeek Harness（dsh）的自定义插件索引，格式说明见 dsh 仓库�
 
 ```text
 dsh-plugins-index/
-├── index.json   # 索引本体，格式 1
-└── icons/       # 可选；图标以相对路径引用时放在这里
+├── index.json         # 生成产物，格式 1
+├── icons/             # 图标文件，由 overrides.json 以相对路径引用
+├── plugins.yaml       # 来源列表：npm 包与 GitHub 仓库
+├── overrides.json     # 展示字段与 Git 源策略的覆盖
+├── market.json        # 索引根字段：title / description
+├── scripts/generate.mjs
+├── package.json
+└── node_modules/      # 依赖目录，已 gitignore
 ```
 
 `index.json` 目前列出四个插件：
@@ -23,7 +29,7 @@ dsh-plugins-index/
 
 `engines.dsh` 的来源：manifest 声明了 `engines.dsh` 时原样复制，否则取所有 `@deepseek-ai/dsh` / `@deepseek-ai/dsh-*` peer 范围的合取；没有这类 peer 的版本省略该字段，语义为任意 dsh 版本。
 
-`dsh-memory-evolve` 只按 Git 提交固定（仓库用的是日期式标签，没有 semver 标签），且其 `package.json` 带 `"private": true` —— 官方参考生成器会跳过这类包，这里是手工索引才保留。
+`dsh-memory-evolve` 只按 Git 提交固定（仓库用的是日期式标签，没有 semver 标签），且其 `package.json` 带 `"private": true` —— 官方参考生成器会跳过这类包，这里在 `overrides.json` 里显式设了 `"allowPrivate": true`。
 
 ## 发布
 
@@ -46,46 +52,65 @@ python -m http.server 8080
 
 索引读取有 10 分钟缓存，改完想立即生效就点「发现」的刷新。
 
-## 发新版本时手动改两处
-
-以 npm 来源为例，**替换**而不是追加：
-
-1. 把对应插件 `versions` 里唯一那块改成新版本：
-
-   ```json
-   {
-     "version": "1.21.0",
-     "publishTimestamp": 1794300000,
-     "source": { "type": "npm" },
-     "engines": { "dsh": ">=0.1.2-rc.1" }
-   }
-   ```
-
-2. 把该插件的 `dist-tags.latest` 改成同一个版本号（两者必须一致，否则整份索引被拒收）。
-
-`publishTimestamp` 是 npm 上的发布时间（Unix 秒），用一条命令取：
+## 更新索引
 
 ```sh
-npm view @smai-kit/dsh-smkit time.1.21.0 --json
+npm install          # 首次或依赖变化后
+npm run index        # 按 plugins.yaml 重新生成 index.json
+npm run index:check  # 只校验，不一致时退出码 1（给 CI 用）
 ```
 
-列出某包的最新版本与时间（对照着改）：
+`plugins.yaml` 是真正的 YAML，按 `yaml` 包解析。默认用分组映射，顺序即索引顺序：
 
-```sh
-npm view dsh-better-sidebar version time --json
+```yaml
+npm:
+  - '@smai-kit/dsh-smkit'
+  - dsh-better-sidebar
+  - dsh-sessions-manager
+
+github:
+  - csyangwen/dsh-memory-evolve
 ```
 
-版本号与 registry 不一致、时间戳写错这类问题校验器查不出来，只能靠人工核对。
+- `npm:` 与 `github:`（`git:` 等价）是唯一认的两个键，值可以是单个字符串或字符串数组；
+- `github:` 的条目可写 `owner/repo` 简写或完整 `https://` URL，简写展开成 `https://github.com/owner/repo`；
+- 以 `@` 开头的包名必须加引号（`'@scope/name'`），否则 YAML 本身就不合法；
+- 需要 npm 与 github 交错排序时，改用有序列表写法：
 
-第三方插件更新时，用同样的方式替换版本即可；不想追更就保持原样，索引是自洽的快照。
+  ```yaml
+  - npm: '@smai-kit/dsh-smkit'
+  - github: csyangwen/dsh-memory-evolve
+  - npm: dsh-sessions-manager
+  ```
 
-## 改成自动生成
+- 顶层写错键（如 `foo:`）或条目不是字符串都会报错并中止，不会写出半成品索引。
 
-手写适合现在这几个包。要自动化时不必搬 dsh 仓库里的参考生成器（它是 `private` 包），用一个薄脚本即可：读 `plugins.txt` → 取 `https://registry.npmjs.org/<name>` 的 packument（其中保留了 `dsh.bundle`）→ 组 `index.json` → 用 `@deepseek-ai/dsh-plugin-market-index` 的 `parseMarketIndex` 预检后写出。
+生成器做的事：
+
+1. 按 `plugins.yaml` 顺序读取来源：npm 包名走 `https://registry.npmjs.org/<name>`；`https://github.com/...` 走 GitHub API，读默认分支 HEAD 提交与 `package.json`。
+2. 只收录声明了 `dsh.bundle.patch`、未弃用、版本号是精确 SemVer 的版本；每个插件只保留 `dist-tags.latest` 指向的那个（不可用时退到最高稳定版，并给出警告）。
+3. `publishTimestamp`：npm 取 registry 发布时间，Git 取提交的 committer 时间；`engines.dsh` 取 manifest 声明，否则取 `@deepseek-ai/dsh*` peer 范围的合取；无则省略。
+4. `dist-tags` 只保留指向所收录版本的标签；随后用 `@deepseek-ai/dsh-plugin-market-index` 的 `parseMarketIndex` 校验，通过才写文件。
+5. 写入是原子的，且内容未变时不改动文件；任一来源读取失败都会中止，**不写半成品索引**。
+
+`overrides.json` 可按键（包名或 Git URL）覆盖展示与策略：
+
+| 字段 | 作用 |
+|---|---|
+| `title`、`description`、`author`、`homepage`、`repository`、`keywords` | 覆盖 manifest 的展示字段；`description` 支持 `{ "en", "zh" }` 多语言 |
+| `icon` | 仓库内的相对路径，如 `icons/foo.svg`，必须是实际存在的文件 |
+| `allowPrivate` | Git 源 `package.json` 带 `"private": true` 时必须显式设为 `true` |
+| `path` | Git 仓库为 monorepo 时，包在仓库中的目录 |
+
+可选环境变量：`GITHUB_TOKEN`（提高 API 限额、读私有仓库）、`NPM_REGISTRY`（换 registry）、`INDEX_URL`（仅用于校验时解析相对图标，默认 `https://smk-h.github.io/dsh-plugins-index/index.json`）。
+
+CI 里两种用法任选：定时跑 `npm run index` 后把变更提交；或在合并请求里跑 `npm run index:check`，索引过期就让流水线失败。
 
 ## 已知限制
 
 - 每个插件只列一个版本，无法从「发现」安装历史版本；需要旧版就用 `dsh plugin add <name>@<version>`。
 - 索引不支持升级：新版本只显示为「有新版本」，仍需卸载后再装。
-- 索引是静态快照，重新生成前版本列表不会更新。
+- 生成器跑之前索引不会变；Git 源固定在默认分支 HEAD，不上标签、不读历史提交。
+- Git 源只支持 `github.com`，且默认只读仓库根 `package.json`（monorepo 用 `overrides.json` 的 `path`）；未认证的 GitHub API 限额为 60 次/小时，一个 Git 源约 2~3 次请求，CI 里建议配 `GITHUB_TOKEN`。
+- 不读取包的 locale 文件，也不从 tarball 抽图标：标题、图标这类字段靠 `overrides.json` 手工维护。
 - 索引无签名，`name`/`version`/`engines` 的真实性由发布方声明。
