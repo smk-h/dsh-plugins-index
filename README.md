@@ -106,6 +106,38 @@ github:
 
 CI 里两种用法任选：定时跑 `npm run index` 后把变更提交；或在合并请求里跑 `npm run index:check`，索引过期就让流水线失败。
 
+## 定时流水线
+
+`.cnb/workflows/cnb-crontab.yml` 里配置了每天 **01:00（Asia/Shanghai）** 的刷新任务：
+
+```yaml
+main:
+  'crontab: 0 1 * * *':
+    - name: refresh-plugin-index
+      docker:
+        image: node:22
+      stages:
+        - name: regenerate index
+          script: |
+            npm ci
+            npm run index
+        - name: commit and push
+          script: |
+            if git diff --quiet -- index.json; then exit 0; fi
+            git add index.json
+            git commit -m "chore(index): 每日定时刷新索引"
+            git push origin HEAD:main
+```
+
+行为与注意点：
+
+- 到点后拉取 `main` 的 HEAD 执行，`index.json` 没有变化就跳过提交，不会产生空提交；
+- 有变化才提交并回推；CI 环境的 `origin` 自带 `CNB_TOKEN` 鉴权，不需要额外配密码；
+- 回推会触发 `main` 的 push 流水线，也就是现有的「同步到 GitHub」，GitHub Pages 随之更新；
+- 定时任务的执行身份是「最后修改本配置并推送的人」，此人被移出仓库会导致任务失败；
+- 改完 `cnb-crontab.yml` 要顺带改一下 `.cnb.yml`（哪怕加个空行）再推送，否则平台不会重新解析 include 模板；
+- 需要提高 GitHub API 限额时，在仓库环境里提供 `GITHUB_TOKEN`，生成器会自动使用。
+
 ## 已知限制
 
 - 每个插件只列一个版本，无法从「发现」安装历史版本；需要旧版就用 `dsh plugin add <name>@<version>`。
