@@ -1,0 +1,229 @@
+{
+  "format": 1,
+  "title": {
+    "en": "smkit plugin index",
+    "zh": "smkit 插件索引"
+  },
+  "description": {
+    "en": "Plugins maintained by smk-h for DeepSeek Harness.",
+    "zh": "smk-h 维护的 DeepSeek Harness 插件。"
+  },
+  "plugins": [
+    {
+      "name": "@smai-kit/dsh-smkit",
+      "title": "dsh-smkit",
+      "description": {
+        "en": "MCP manager for DeepSeek Harness: per-workspace MCP servers, an opt-in on-demand tool broker, OAuth, plus skills, OpenSpec, session deletion, theme center and more.",
+        "zh": "DeepSeek Harness 的 MCP 管理器：按工作区启停 MCP、按需工具代理、OAuth，另含技能、OpenSpec、删除会话、主题中心等十三项功能。"
+      },
+      "author": "sumu",
+      "homepage": "https://github.com/smk-h/dsh-smkit#readme",
+      "repository": {
+        "url": "https://github.com/smk-h/dsh-smkit"
+      },
+      "metadata": {
+        "keywords": [
+          "dsh",
+          "deepseek-harness",
+          "deepseek",
+          "cordis",
+          "plugin",
+          "mcp",
+          "model-context-protocol",
+          "oauth",
+          "stdio"
+        ]
+      },
+      "dist-tags": {
+        "latest": "1.20.0"
+      },
+      "versions": [
+        {
+          "version": "1.20.0",
+          "publishTimestamp": 1794226864,
+          "source": {
+            "type": "npm"
+          },
+          "engines": {
+            "dsh": ">=0.1.2-rc.1"
+          }
+        },
+        {
+          "version": "1.19.0",
+          "publishTimestamp": 1794187831,
+          "source": {
+            "type": "npm"
+          },
+          "engines": {
+            "dsh": ">=0.1.2-rc.1"
+          }
+        },
+        {
+          "version": "1.17.0",
+          "publishTimestamp": 1794045877,
+          "source": {
+            "type": "npm"
+          },
+          "engines": {
+            "dsh": ">=0.1.2-rc.1"
+          }
+        },
+        {
+          "version": "1.16.0",
+          "publishTimestamp": 1793798709,
+          "source": {
+            "type": "npm"
+          },
+          "engines": {
+            "dsh": ">=0.1.2-rc.1"
+          }
+        },
+        {
+          "version": "1.15.0",
+          "publishTimestamp": 1792502632,
+          "source": {
+            "type": "npm"
+          },
+          "engines": {
+            "dsh": ">=0.1.2-rc.1"
+          }
+        },
+        {
+          "version": "1.14.0",
+          "publishTimestamp": 1792497979,
+          "source": {
+            "type": "npm"
+          },
+          "engines": {
+            "dsh": ">=0.1.2-rc.1"
+          }
+        },
+        {
+          "version": "1.13.0",
+          "publishTimestamp": 1792401666,
+          "source": {
+            "type": "npm"
+          },
+          "engines": {
+            "dsh": ">=0.1.2-rc.1"
+          }
+        },
+        {
+          "version": "1.12.0",
+          "publishTimestamp": 1792201647,
+          "source": {
+            "type": "npm"
+          },
+          "engines": {
+            "dsh": ">=0.1.2-rc.1"
+          }
+        },
+        {
+          "version": "1.11.0",
+          "publishTimestamp": 1790688805,
+          "source": {
+            "type": "npm"
+          }
+        },
+        {
+          "version": "1.10.1",
+          "publishTimestamp": 1790591167,
+          "source": {
+            "type": "npm"
+          }
+        },
+        {
+          "version": "1.10.0",
+          "publishTimestamp": 1790588836,
+          "source": {
+            "type": "npm"
+          }
+        },
+        {
+          "version": "1.9.0",
+          "publishTimestamp": 1790559733,
+          "source": {
+            "type": "npm"
+          }
+        },
+        {
+          "version": "1.8.0",
+          "publishTimestamp": 1790504250,
+          "source": {
+            "type": "npm"
+          }
+        },
+        {
+          "version": "1.7.0",
+          "publishTimestamp": 1790392842,
+          "source": {
+            "type": "npm"
+          }
+        },
+        {
+          "version": "1.6.0",
+          "publishTimestamp": 1790230782,
+          "source": {
+            "type": "npm"
+          }
+        },
+        {
+          "version": "1.5.0",
+          "publishTimestamp": 1790087694,
+          "source": {
+            "type": "npm"
+          }
+        },
+        {
+          "version": "1.4.0",
+          "publishTimestamp": 1790057213,
+          "source": {
+            "type": "npm"
+          }
+        },
+        {
+          "version": "1.3.0",
+          "publishTimestamp": 1789740870,
+          "source": {
+            "type": "npm"
+          }
+        },
+        {
+          "version": "1.2.0",
+          "publishTimestamp": 1789617053,
+          "source": {
+            "type": "npm"
+          }
+        },
+        {
+          "version": "1.1.1",
+          "publishTimestamp": 1789297141,
+          "source": {
+            "type": "npm"
+          }
+        },
+        {
+          "version": "1.1.0",
+          "publishTimestamp": 1789292859,
+          "source": {
+            "type": "npm"
+          }
+        },
+        {
+          "version": "1.0.0",
+          "publishTimestamp": 1789140635,
+          "source": {
+            "type": "npm"
+          }
+        },
+        {
+          "version": "0.2.0",
+          "publishTimestamp": 1789089199,
+          "source": {
+            "type": "npm"
+          }
+        }
+      ]
+    }
+  ]
+}
