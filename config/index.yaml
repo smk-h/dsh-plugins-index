@@ -18,8 +18,7 @@ sources:
     - dsh-better-sidebar
     - dsh-sessions-manager
     - dsh-context
-  github:
-    - csyangwen/dsh-memory-evolve
+    - dsh-mnemon
 
 overrides:
   '@smai-kit/dsh-smkit':
@@ -30,9 +29,11 @@ overrides:
   dsh-better-sidebar:
     title: Better Sidebar
     icon: icons/dsh-better-sidebar.svg
-  dsh-memory-evolve:
-    title: Memory Evolve
-    allowPrivate: true
+  dsh-mnemon:
+    title: Mnemon
+    description:
+      en: 'Composable, view-based memory for DeepSeek Harness: layered runtime memory, project documents, pluggable memory spaces with eight providers, self-evolving skills and git sync.'
+      zh: DeepSeek Harness 的可组合记忆：分层运行时记忆、项目档案、可插拔记忆空间（八种 Provider）、可自进化技能与 Git 同步。
   dsh-sessions-manager:
     title: Sessions Manager
   dsh-context:

@@ -146,17 +146,62 @@
       ]
     },
     {
-      "name": "dsh-memory-evolve",
-      "title": "Memory Evolve",
-      "description": "为 DeepSeek Harness 带来分层记忆（全局 / 用户 / 项目 / GIT 分支 / 每日）与自我进化（经验沉淀 + 技能自动创建）和技能管理、待办管理、CLI 调度（kimi/codex/grok/hermes 等外部 AI 统一调度）、临时信息便签，带 WebUI 管理界面。Hermes-style long-term memory, self-evolution, skills, todos and external CLI agent dispatch for DeepSeek Harness.",
+      "name": "dsh-mnemon",
+      "title": "Mnemon",
+      "description": {
+        "en": "Composable, view-based memory for DeepSeek Harness: layered runtime memory, project documents, pluggable memory spaces with eight providers, self-evolving skills and git sync.",
+        "zh": "DeepSeek Harness 的可组合记忆：分层运行时记忆、项目档案、可插拔记忆空间（八种 Provider）、可自进化技能与 Git 同步。"
+      },
+      "homepage": "https://github.com/omdsh-dev/dsh-mnemon#readme",
+      "repository": {
+        "url": "https://github.com/omdsh-dev/dsh-mnemon"
+      },
+      "metadata": {
+        "keywords": [
+          "deepseek-harness",
+          "deepseek-harness-plugin",
+          "dsh-plugin",
+          "agent-memory",
+          "llm-memory",
+          "persistent-memory",
+          "long-term-memory",
+          "runtime-memory",
+          "working-memory",
+          "cross-session-memory",
+          "multi-agent-memory",
+          "shared-agent-memory",
+          "memory-orchestration",
+          "memory-provider",
+          "pluggable-memory",
+          "context-management",
+          "project-memory",
+          "project-documents",
+          "document-search",
+          "semantic-recall",
+          "local-first",
+          "mnemon",
+          "openviking",
+          "honcho",
+          "mem0",
+          "hindsight",
+          "holographic-memory",
+          "retaindb",
+          "byterover",
+          "supermemory"
+        ]
+      },
+      "dist-tags": {
+        "latest": "0.5.44"
+      },
       "versions": [
         {
-          "version": "0.1.0",
-          "publishTimestamp": 1793285011,
+          "version": "0.5.44",
+          "publishTimestamp": 1794345061,
           "source": {
-            "type": "git",
-            "url": "https://github.com/csyangwen/dsh-memory-evolve",
-            "commit": "44b6b3eb65a1d50ceba0afb2c13acdd4a8b81423"
+            "type": "npm"
+          },
+          "engines": {
+            "dsh": ">=0.2.0-rc.2 <0.2.1-0 || >=0.2.1-rc.1 <0.3.0-0"
           }
         }
       ]

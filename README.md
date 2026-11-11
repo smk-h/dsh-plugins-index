@@ -15,20 +15,19 @@ dsh-plugins-index/
 └── node_modules/      # 依赖目录，已 gitignore
 ```
 
-`index.json` 目前列出四个插件：
+`index.json` 目前列出五个插件：
 
 | 插件 | 来源 | 收录版本 |
 |---|---|---|
-| `@smai-kit/dsh-smkit` | npm | 1.20.0 |
-| `dsh-better-sidebar` | npm | 0.30.1 |
-| `dsh-memory-evolve` | Git 提交 `44b6b3e` | 0.1.0 |
+| `@smai-kit/dsh-smkit` | npm | 1.20.1 |
+| `dsh-better-sidebar` | npm | 0.31.1 |
 | `dsh-sessions-manager` | npm | 3.7.10 |
+| `dsh-context` | npm | 0.83.1 |
+| `dsh-mnemon` | npm | 0.5.44 |
 
 每个插件只保留一个版本（即发布时的 `latest`），不收录历史版本与 `beta` / `alpha` 渠道：索引用于“装到当前最新”，回滚或旧版本请直接走 `dsh plugin add <name>@<version>`。
 
 `engines.dsh` 的来源：manifest 声明了 `engines.dsh` 时原样复制，否则取所有 `@deepseek-ai/dsh` / `@deepseek-ai/dsh-*` peer 范围的合取；没有这类 peer 的版本省略该字段，语义为任意 dsh 版本。
-
-`dsh-memory-evolve` 只按 Git 提交固定（仓库用的是日期式标签，没有 semver 标签），且其 `package.json` 带 `"private": true` —— 官方参考生成器会跳过这类包，这里在 `config/index.yaml` 的 `overrides` 里显式设了 `"allowPrivate": true`。
 
 ## 发布
 
@@ -70,8 +69,7 @@ market:
 sources:
   npm:
     - '@smai-kit/dsh-smkit'
-  github:
-    - csyangwen/dsh-memory-evolve
+    - dsh-mnemon
 
 overrides:
   dsh-better-sidebar:
@@ -85,7 +83,7 @@ overrides:
   ```yaml
   sources:
     - npm: '@smai-kit/dsh-smkit'
-    - github: csyangwen/dsh-memory-evolve
+    - github: owner/repo
     - npm: dsh-sessions-manager
   ```
 
