@@ -17,6 +17,7 @@ sources:
     - '@smai-kit/dsh-smkit'
     - dsh-better-sidebar
     - dsh-sessions-manager
+    - dsh-context
   github:
     - csyangwen/dsh-memory-evolve
 
@@ -34,3 +35,6 @@ overrides:
     allowPrivate: true
   dsh-sessions-manager:
     title: Sessions Manager
+  dsh-context:
+    title: Context
+    icon: icons/dsh-context.svg

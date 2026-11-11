@@ -109,6 +109,43 @@
       ]
     },
     {
+      "name": "dsh-context",
+      "title": "Context",
+      "icon": "icons/dsh-context.svg",
+      "description": "A DeepSeek Harness plugin for context insight and management, with context dashboard and context command, for understanding how the context is made of, and how it evolves.",
+      "author": "bowenliang123",
+      "homepage": "https://github.com/bowenliang123/dsh-context",
+      "repository": {
+        "url": "https://github.com/bowenliang123/dsh-context"
+      },
+      "metadata": {
+        "keywords": [
+          "deepseek-harness",
+          "dsh",
+          "cordis",
+          "plugin",
+          "context",
+          "token",
+          "ui"
+        ]
+      },
+      "dist-tags": {
+        "latest": "0.83.1"
+      },
+      "versions": [
+        {
+          "version": "0.83.1",
+          "publishTimestamp": 1794272083,
+          "source": {
+            "type": "npm"
+          },
+          "engines": {
+            "dsh": ">=0.2.0-rc.2 || >=0.2.1-rc.2 || >=0.2.2-rc.1"
+          }
+        }
+      ]
+    },
+    {
       "name": "dsh-memory-evolve",
       "title": "Memory Evolve",
       "description": "为 DeepSeek Harness 带来分层记忆（全局 / 用户 / 项目 / GIT 分支 / 每日）与自我进化（经验沉淀 + 技能自动创建）和技能管理、待办管理、CLI 调度（kimi/codex/grok/hermes 等外部 AI 统一调度）、临时信息便签，带 WebUI 管理界面。Hermes-style long-term memory, self-evolution, skills, todos and external CLI agent dispatch for DeepSeek Harness.",
