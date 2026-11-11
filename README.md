@@ -10,7 +10,18 @@ dsh-plugins-index/
 └── icons/       # 可选；图标以相对路径引用时放在这里
 ```
 
-`index.json` 目前只列一个插件：`@smai-kit/dsh-smkit`，全部为 npm 来源，`engines.dsh` 取自各版本 manifest 的 `@deepseek-ai/dsh` peer 范围（`>=0.1.2-rc.1`）；1.12.0 之前没有该 peer，故省略 `engines`，等价于任意 dsh 版本。
+`index.json` 目前列出四个插件：
+
+| 插件 | 来源 | 版本数 | 默认版本 |
+|---|---|---|---|
+| `@smai-kit/dsh-smkit` | npm | 23 | 1.20.0 |
+| `dsh-better-sidebar` | npm | 36 | 0.30.1（另有 `beta` / `alpha` 渠道） |
+| `dsh-memory-evolve` | Git 提交 `44b6b3e` | 1 | 0.1.0 |
+| `dsh-sessions-manager` | npm | 25 | 3.7.10 |
+
+`engines.dsh` 的来源：manifest 声明了 `engines.dsh` 时原样复制，否则取所有 `@deepseek-ai/dsh` / `@deepseek-ai/dsh-*` peer 范围的合取；没有这类 peer 的版本省略该字段，语义为任意 dsh 版本。
+
+`dsh-memory-evolve` 只按 Git 提交固定（仓库用的是日期式标签，没有 semver 标签），且其 `package.json` 带 `"private": true` —— 官方参考生成器会跳过这类包，这里是手工索引才保留。
 
 ## 发布
 
@@ -35,7 +46,9 @@ python -m http.server 8080
 
 ## 发新版本时手动改两处
 
-1. 在 `versions` 数组**最前面**加一块（顺序不影响安装，但便于阅读）：
+以 npm 来源为例：
+
+1. 在对应插件的 `versions` 数组**最前面**加一块（顺序不影响安装，但便于阅读）：
 
    ```json
    {
@@ -46,7 +59,7 @@ python -m http.server 8080
    }
    ```
 
-2. 把 `dist-tags.latest` 改成新版本号。
+2. 把该插件的 `dist-tags.latest` 改成新版本号。
 
 `publishTimestamp` 是 npm 上的发布时间（Unix 秒），用一条命令取：
 
@@ -54,17 +67,19 @@ python -m http.server 8080
 npm view @smai-kit/dsh-smkit time --json
 ```
 
-或直接算：
+列出某包尚未收录的版本与时间（对照着改）：
 
 ```sh
-node -e "console.log(Math.floor(Date.parse(require('child_process').execSync('npm view @smai-kit/dsh-smkit time.1.21.0 --json').toString().trim())/1000))"
+npm view dsh-better-sidebar versions time --json
 ```
 
 漏改 `dist-tags.latest` 不会被拒收，但「最新渠道」会指向旧版本；版本号与 registry 不一致、时间戳写错这类问题校验器查不出来，只能靠生成器或人工核对。
 
+第三方插件更新时，用同样的方式补版本即可；不想追更就保持原样，索引是自洽的快照。
+
 ## 改成自动生成
 
-手写适合现在的一个包。要自动化时不必搬 dsh 仓库里的参考生成器（它是 `private` 包），用一个薄脚本即可：读 `plugins.txt` → 取 `https://registry.npmjs.org/<name>` 的 packument（其中保留了 `dsh.bundle`）→ 组 `index.json` → 用 `@deepseek-ai/dsh-plugin-market-index` 的 `parseMarketIndex` 预检后写出。
+手写适合现在这几个包。要自动化时不必搬 dsh 仓库里的参考生成器（它是 `private` 包），用一个薄脚本即可：读 `plugins.txt` → 取 `https://registry.npmjs.org/<name>` 的 packument（其中保留了 `dsh.bundle`）→ 组 `index.json` → 用 `@deepseek-ai/dsh-plugin-market-index` 的 `parseMarketIndex` 预检后写出。
 
 ## 已知限制
 
