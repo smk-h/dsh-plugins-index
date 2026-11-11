@@ -7,10 +7,9 @@ DeepSeek Harness（dsh）的自定义插件索引，格式说明见 dsh 仓库�
 ```text
 dsh-plugins-index/
 ├── index.json         # 生成产物，格式 1
-├── icons/             # 图标文件，由 overrides.json 以相对路径引用
-├── plugins.yaml       # 来源列表：npm 包与 GitHub 仓库
-├── overrides.json     # 展示字段与 Git 源策略的覆盖
-├── market.json        # 索引根字段：title / description
+├── icons/             # 图标文件，由 config/index.yaml 以相对路径引用
+├── config/
+│   └── index.yaml     # 市场头、来源列表、插件覆盖
 ├── scripts/generate.mjs
 ├── package.json
 └── node_modules/      # 依赖目录，已 gitignore
@@ -29,7 +28,7 @@ dsh-plugins-index/
 
 `engines.dsh` 的来源：manifest 声明了 `engines.dsh` 时原样复制，否则取所有 `@deepseek-ai/dsh` / `@deepseek-ai/dsh-*` peer 范围的合取；没有这类 peer 的版本省略该字段，语义为任意 dsh 版本。
 
-`dsh-memory-evolve` 只按 Git 提交固定（仓库用的是日期式标签，没有 semver 标签），且其 `package.json` 带 `"private": true` —— 官方参考生成器会跳过这类包，这里在 `overrides.json` 里显式设了 `"allowPrivate": true`。
+`dsh-memory-evolve` 只按 Git 提交固定（仓库用的是日期式标签，没有 semver 标签），且其 `package.json` 带 `"private": true` —— 官方参考生成器会跳过这类包，这里在 `config/index.yaml` 的 `overrides` 里显式设了 `"allowPrivate": true`。
 
 ## 发布
 
@@ -56,44 +55,52 @@ python -m http.server 8080
 
 ```sh
 npm install          # 首次或依赖变化后
-npm run index        # 按 plugins.yaml 重新生成 index.json
+npm run index        # 按 config/index.yaml 重新生成 index.json
 npm run index:check  # 只校验，不一致时退出码 1（给 CI 用）
 ```
 
-`plugins.yaml` 是真正的 YAML，按 `yaml` 包解析。默认用分组映射，顺序即索引顺序：
+所有输入都在 `config/index.yaml`，分三块：
 
 ```yaml
-npm:
-  - '@smai-kit/dsh-smkit'
-  - dsh-better-sidebar
-  - dsh-sessions-manager
+market:
+  title:
+    en: smkit plugin index
+    zh: smkit 插件索引
 
-github:
-  - csyangwen/dsh-memory-evolve
+sources:
+  npm:
+    - '@smai-kit/dsh-smkit'
+  github:
+    - csyangwen/dsh-memory-evolve
+
+overrides:
+  dsh-better-sidebar:
+    title: Better Sidebar
+    icon: icons/dsh-better-sidebar.svg
 ```
 
-- `npm:` 与 `github:`（`git:` 等价）是唯一认的两个键，值可以是单个字符串或字符串数组；
-- `github:` 的条目可写 `owner/repo` 简写或完整 `https://` URL，简写展开成 `https://github.com/owner/repo`；
-- 以 `@` 开头的包名必须加引号（`'@scope/name'`），否则 YAML 本身就不合法；
-- 需要 npm 与 github 交错排序时，改用有序列表写法：
+- `market`：写进 `index.json` 的根字段，`title` 必填、`description` 可选；
+- `sources`：`npm` 与 `github`（`git` 等价）两个键，值可为单个字符串或字符串数组；`github` 条目支持 `owner/repo` 简写，展开成 `https://github.com/owner/repo`；需要 npm 与 github 交错排序时，把 `sources` 改成有序列表：
 
   ```yaml
-  - npm: '@smai-kit/dsh-smkit'
-  - github: csyangwen/dsh-memory-evolve
-  - npm: dsh-sessions-manager
+  sources:
+    - npm: '@smai-kit/dsh-smkit'
+    - github: csyangwen/dsh-memory-evolve
+    - npm: dsh-sessions-manager
   ```
 
-- 顶层写错键（如 `foo:`）或条目不是字符串都会报错并中止，不会写出半成品索引。
+- `overrides`：按包名或 Git URL 覆盖单个插件，字段见下表；
+- 以 `@` 开头的包名必须加引号，否则 YAML 本身就不合法；未知顶层键、未知分组、非字符串条目都会报错并中止，不写半成品索引。
 
 生成器做的事：
 
-1. 按 `plugins.yaml` 顺序读取来源：npm 包名走 `https://registry.npmjs.org/<name>`；`https://github.com/...` 走 GitHub API，读默认分支 HEAD 提交与 `package.json`。
+1. 按 `config/index.yaml` 的 `sources` 顺序读取来源：npm 包名走 `https://registry.npmjs.org/<name>`；`https://github.com/...` 走 GitHub API，读默认分支 HEAD 提交与 `package.json`。
 2. 只收录声明了 `dsh.bundle.patch`、未弃用、版本号是精确 SemVer 的版本；每个插件只保留 `dist-tags.latest` 指向的那个（不可用时退到最高稳定版，并给出警告）。
 3. `publishTimestamp`：npm 取 registry 发布时间，Git 取提交的 committer 时间；`engines.dsh` 取 manifest 声明，否则取 `@deepseek-ai/dsh*` peer 范围的合取；无则省略。
 4. `dist-tags` 只保留指向所收录版本的标签；随后用 `@deepseek-ai/dsh-plugin-market-index` 的 `parseMarketIndex` 校验，通过才写文件。
 5. 写入是原子的，且内容未变时不改动文件；任一来源读取失败都会中止，**不写半成品索引**。
 
-`overrides.json` 可按键（包名或 Git URL）覆盖展示与策略：
+`config/index.yaml` 的 `overrides` 可按键（包名或 Git URL）覆盖展示与策略：
 
 | 字段 | 作用 |
 |---|---|
@@ -143,6 +150,6 @@ main:
 - 每个插件只列一个版本，无法从「发现」安装历史版本；需要旧版就用 `dsh plugin add <name>@<version>`。
 - 索引不支持升级：新版本只显示为「有新版本」，仍需卸载后再装。
 - 生成器跑之前索引不会变；Git 源固定在默认分支 HEAD，不上标签、不读历史提交。
-- Git 源只支持 `github.com`，且默认只读仓库根 `package.json`（monorepo 用 `overrides.json` 的 `path`）；未认证的 GitHub API 限额为 60 次/小时，一个 Git 源约 2~3 次请求，CI 里建议配 `GITHUB_TOKEN`。
-- 不读取包的 locale 文件，也不从 tarball 抽图标：标题、图标这类字段靠 `overrides.json` 手工维护。
+- Git 源只支持 `github.com`，且默认只读仓库根 `package.json`（monorepo 用 `config/index.yaml` 里 `overrides.<包名>.path`）；未认证的 GitHub API 限额为 60 次/小时，一个 Git 源约 2~3 次请求，CI 里建议配 `GITHUB_TOKEN`。
+- 不读取包的 locale 文件，也不从 tarball 抽图标：标题、图标这类字段靠 `config/index.yaml` 手工维护。
 - 索引无签名，`name`/`version`/`engines` 的真实性由发布方声明。

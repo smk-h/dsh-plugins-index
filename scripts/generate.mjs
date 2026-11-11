@@ -1,5 +1,5 @@
 /**
- * 生成 index.json：从 plugins.txt 读取 npm 包与 GitHub 仓库，按插件市场格式 1 输出。
+ * 生成 index.json：从 config/index.yaml 读取来源与展示配置，按插件市场格式 1 输出。
  *
  * 规则与 dsh 官方参考生成器一致的部分：只收录声明了 dsh.bundle.patch 且未弃用的版本；
  * engines.dsh 取 manifest 的 engines.dsh，否则取 @deepseek-ai/dsh* peer 范围的合取；
@@ -19,9 +19,7 @@ import { parseMarketIndex } from '@deepseek-ai/dsh-plugin-market-index'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const INDEX_FILE = join(ROOT, 'index.json')
-const PLUGINS_FILE = join(ROOT, 'plugins.yaml')
-const OVERRIDES_FILE = join(ROOT, 'overrides.json')
-const MARKET_FILE = join(ROOT, 'market.json')
+const CONFIG_FILE = join(ROOT, 'config', 'index.yaml')
 const REGISTRY = (process.env.NPM_REGISTRY ?? 'https://registry.npmjs.org/').replace(/\/?$/u, '/')
 const INDEX_URL = process.env.INDEX_URL ?? 'https://smk-h.github.io/dsh-plugins-index/index.json'
 const GITHUB_TOKEN = (process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '').trim() || undefined
@@ -31,10 +29,6 @@ const PACKAGE_NAME = /^(?:@[a-z0-9][a-z0-9._~-]*\/)?[a-z0-9][a-z0-9._~-]*$/u
 
 function warn(message) {
   console.error(`warning: ${message}`)
-}
-
-function readJson(file) {
-  return JSON.parse(readFileSync(file, 'utf8'))
 }
 
 async function getJson(url, headers = {}) {
@@ -239,7 +233,7 @@ async function gitPlugin(url, overrides) {
     if (typeof name !== 'string' || !PACKAGE_NAME.test(name)) throw new Error(`${url}: ${subdirectory}/package.json 的 name 无效`)
   }
   if (manifest.private === true && settings.allowPrivate !== true) {
-    throw new Error(`${url}: package.json 带 "private": true，若确认要收录请在 overrides.json 里为该包设置 "allowPrivate": true`)
+    throw new Error(`${url}: package.json 带 "private": true，若确认要收录请在 config/index.yaml 的 overrides 里为该包设置 "allowPrivate": true`)
   }
   if (!declaresBundle(manifest)) throw new Error(`${url}: package.json 没有声明 dsh.bundle.patch`)
   const version = manifest.version
@@ -279,8 +273,28 @@ function groupEntries(value, key) {
   })
 }
 
+/** 读取并校验 config/index.yaml。 */
+function readConfig(file) {
+  let document
+  try {
+    document = parseYaml(readFileSync(file, 'utf8'))
+  } catch (error) {
+    throw new Error(`config/index.yaml YAML 解析失败：${error.message}`)
+  }
+  if (typeof document !== 'object' || document === null || Array.isArray(document)) throw new Error('config/index.yaml 顶层必须是映射')
+  const unknown = Object.keys(document).filter(key => !['market', 'sources', 'overrides'].includes(key))
+  if (unknown.length > 0) throw new Error(`config/index.yaml 含未知顶层键：${unknown.join('、')}`)
+  const market = document.market
+  if (typeof market !== 'object' || market === null || Array.isArray(market)) throw new Error('config/index.yaml 缺少 market 映射')
+  if (market.title === undefined) throw new Error('config/index.yaml 缺少 market.title')
+  if (document.sources === undefined) throw new Error('config/index.yaml 缺少 sources')
+  const overrides = document.overrides ?? {}
+  if (typeof overrides !== 'object' || overrides === null || Array.isArray(overrides)) throw new Error('config/index.yaml 的 overrides 必须是映射')
+  return { market, sources: document.sources, overrides }
+}
+
 /**
- * 解析 plugins.yaml。两种写法等价：
+ * 解析 sources 节点。两种写法等价：
  *
  *   npm: ['@scope/pkg', 'pkg']      # 分组映射，npm 在前、github 在后
  *   github: [owner/repo]
@@ -288,18 +302,10 @@ function groupEntries(value, key) {
  *   - npm: '@scope/pkg'             # 有序列表，可交错，顺序即索引顺序
  *   - github: owner/repo
  */
-function parseSources(text) {
-  let document
-  try {
-    document = parseYaml(text)
-  } catch (error) {
-    throw new Error(`YAML 解析失败：${error.message}`)
-  }
+function parseSources(document) {
   const sources = []
   const addNpm = (name) => { sources.push({ kind: 'npm', line: name }) }
   const addGithub = (value) => { sources.push({ kind: 'git', line: githubUrl(value) }) }
-
-  if (document === null || document === undefined) return sources
 
   if (Array.isArray(document)) {
     for (const entry of document) {
@@ -316,7 +322,7 @@ function parseSources(text) {
     return sources
   }
 
-  if (typeof document !== 'object') throw new Error('plugins.yaml 顶层必须是映射或列表')
+  if (typeof document !== 'object' || document === null) throw new Error('sources 必须是映射或列表')
   for (const [key, value] of Object.entries(document)) {
     if (key === 'npm') {
       for (const name of groupEntries(value, key)) addNpm(name)
@@ -330,20 +336,11 @@ function parseSources(text) {
 }
 
 async function main() {
-  const market = readJson(MARKET_FILE)
-  const overrides = existsSync(OVERRIDES_FILE) ? readJson(OVERRIDES_FILE) : {}
+  const { market, sources: sourceList, overrides } = readConfig(CONFIG_FILE)
+  const sources = parseSources(sourceList)
   const plugins = []
   const seen = new Set()
   let failed = false
-
-  let sources
-  try {
-    sources = parseSources(readFileSync(PLUGINS_FILE, 'utf8'))
-  } catch (error) {
-    console.error(`error: ${error.message}`)
-    process.exitCode = 1
-    return
-  }
 
   for (const source of sources) {
     try {
@@ -401,4 +398,9 @@ async function main() {
   console.log(`已写入 index.json（${plugins.length} 个插件）`)
 }
 
-await main()
+try {
+  await main()
+} catch (error) {
+  console.error(`error: ${error.message}`)
+  process.exitCode = 1
+}
