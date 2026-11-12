@@ -35,12 +35,12 @@
         ]
       },
       "dist-tags": {
-        "latest": "1.20.1"
+        "latest": "1.22.0"
       },
       "versions": [
         {
-          "version": "1.20.1",
-          "publishTimestamp": 1794395259,
+          "version": "1.22.0",
+          "publishTimestamp": 1794481694,
           "source": {
             "type": "npm"
           },
@@ -54,22 +54,22 @@
       "name": "dsh-better-sidebar",
       "title": "Better Sidebar",
       "icon": "icons/dsh-better-sidebar.svg",
-      "description": "Better Sidebar for DSH — file tree, editor, changes, tasks and side chat in one column, separate for every conversation. Also exposes a service other plugins use to register sidebar tabs and file viewers.",
+      "description": "Better Sidebar for DSH — file tree, editor, changes, tasks and side chat in one column, separate for every conversation. Configure it in Settings → Side card (bottom-left). Also exposes a service other plugins use to register sidebar tabs and file viewers",
       "repository": {
         "url": "https://github.com/omdsh-dev/DSH-better-sidebar"
       },
       "dist-tags": {
-        "latest": "0.31.1"
+        "latest": "0.32.1"
       },
       "versions": [
         {
-          "version": "0.31.1",
-          "publishTimestamp": 1794406078,
+          "version": "0.32.1",
+          "publishTimestamp": 1794491586,
           "source": {
             "type": "npm"
           },
           "engines": {
-            "dsh": "^0.2.2-rc.1"
+            "dsh": "^0.2.2-rc.2"
           }
         }
       ]
@@ -130,12 +130,12 @@
         ]
       },
       "dist-tags": {
-        "latest": "0.83.1"
+        "latest": "0.84.0"
       },
       "versions": [
         {
-          "version": "0.83.1",
-          "publishTimestamp": 1794272083,
+          "version": "0.84.0",
+          "publishTimestamp": 1794479323,
           "source": {
             "type": "npm"
           },
