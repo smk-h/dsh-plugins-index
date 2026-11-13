@@ -35,12 +35,12 @@
         ]
       },
       "dist-tags": {
-        "latest": "1.22.0"
+        "latest": "1.24.0"
       },
       "versions": [
         {
-          "version": "1.22.0",
-          "publishTimestamp": 1794481694,
+          "version": "1.24.0",
+          "publishTimestamp": 1794553481,
           "source": {
             "type": "npm"
           },
@@ -77,7 +77,7 @@
     {
       "name": "dsh-sessions-manager",
       "title": "Sessions Manager",
-      "description": "DSH 会话管理插件：设置面板 + 侧栏双入口，归档 / 恢复 / 跨工作区移动 / 回收站（可恢复、批量清空、自动清理），子代理折叠与血缘、删父会话连带子代理，空白会话识别，按标题 · ID · 工作区搜索，带磁盘占用与会话详情。已适配 DSH 0.1.7 / 0.2.0 / 0.2.1-rc.2。Session manager for DeepSeek Harness — archive / restore / move / trash lifecycle from both the settings",
+      "description": "DSH 会话管理插件：设置面板 + 侧栏双入口，归档 / 恢复 / 跨工作区移动 / 回收站（可恢复、批量清空、自动清理），子代理折叠与血缘、删父会话连带子代理，空白会话识别，按标题 · ID · 工作区搜索，带磁盘占用与会话详情。已适配 DSH 0.1.7 / 0.2.0 / 0.2.1 / 0.2.2-rc.1。Session manager for DeepSeek Harness — archive / restore / move / trash lifecycle from both the ",
       "homepage": "https://github.com/TOBYCAI/dsh-sessions-manager#readme",
       "repository": {
         "url": "https://github.com/TOBYCAI/dsh-sessions-manager"
@@ -93,12 +93,12 @@
         ]
       },
       "dist-tags": {
-        "latest": "3.7.10"
+        "latest": "3.7.12"
       },
       "versions": [
         {
-          "version": "3.7.10",
-          "publishTimestamp": 1793083893,
+          "version": "3.7.12",
+          "publishTimestamp": 1794586225,
           "source": {
             "type": "npm"
           },
@@ -130,12 +130,12 @@
         ]
       },
       "dist-tags": {
-        "latest": "0.84.0"
+        "latest": "0.84.1"
       },
       "versions": [
         {
-          "version": "0.84.0",
-          "publishTimestamp": 1794479323,
+          "version": "0.84.1",
+          "publishTimestamp": 1794540314,
           "source": {
             "type": "npm"
           },
@@ -191,12 +191,12 @@
         ]
       },
       "dist-tags": {
-        "latest": "0.5.44"
+        "latest": "0.5.45"
       },
       "versions": [
         {
-          "version": "0.5.44",
-          "publishTimestamp": 1794345061,
+          "version": "0.5.45",
+          "publishTimestamp": 1794508085,
           "source": {
             "type": "npm"
           },
