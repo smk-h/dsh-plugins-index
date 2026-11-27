@@ -191,12 +191,12 @@
         ]
       },
       "dist-tags": {
-        "latest": "0.5.55"
+        "latest": "0.5.56"
       },
       "versions": [
         {
-          "version": "0.5.55",
-          "publishTimestamp": 1795545367,
+          "version": "0.5.56",
+          "publishTimestamp": 1795718306,
           "source": {
             "type": "npm"
           },
